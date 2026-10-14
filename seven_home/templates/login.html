@@ -1,0 +1,53 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Customer Login | Seven Home Services</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+</head>
+<body class="bg-light">
+<nav class="navbar navbar-dark" style="background:#14532d">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="/">Seven Home Services</a>
+    </div>
+</nav>
+
+<div class="container py-5" style="max-width:480px">
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4 p-md-5">
+            <h2 class="fw-bold mb-2">Welcome Back</h2>
+            <p class="text-secondary">Log in to your customer account.</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endwith %}
+
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" class="form-control" name="email" required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-control" name="password" required>
+                </div>
+
+                <button class="btn btn-success w-100" type="submit">
+                    Log In
+                </button>
+            </form>
+
+            <p class="text-center mt-4 mb-0">
+                Don't have an account? <a href="/register">Register here</a>
+            </p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

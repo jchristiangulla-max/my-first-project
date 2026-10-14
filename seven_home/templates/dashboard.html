@@ -1,0 +1,163 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Customer Dashboard | Seven Home Services</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+    <style>
+        body { background: #f5f8f5; }
+        .navbar { background: #14532d; }
+        .stat-card, .action-card {
+            border: 0;
+            border-radius: 16px;
+            box-shadow: 0 4px 14px rgba(0,0,0,.05);
+        }
+        .stat-number { font-size: 2rem; font-weight: 800; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-dark">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="/">Seven Home Services</a>
+        <a class="btn btn-outline-light btn-sm" href="/logout">Log Out</a>
+    </div>
+</nav>
+
+<main class="container py-5">
+    <h1 class="fw-bold">Welcome, {{ session["customer_name"] }}!</h1>
+    <p class="text-secondary">
+        Manage your home service requests from your dashboard.
+    </p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endwith %}
+
+    <div class="d-flex flex-wrap gap-2 my-4">
+        <a href="/book-service" class="btn btn-success btn-lg">
+            + Book a Service
+        </a>
+        <a href="/my-bookings" class="btn btn-outline-success btn-lg">
+            My Bookings
+        </a>
+    </div>
+
+    <h4 class="fw-bold mb-3">Booking Overview</h4>
+
+    <div class="row g-3 mb-5">
+        <div class="col-6 col-lg-3">
+            <div class="card stat-card h-100">
+                <div class="card-body">
+                    <p class="text-secondary mb-1">Pending Requests</p>
+                    <div class="stat-number text-warning">
+                        {{ counts["pending"] or 0 }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-lg-3">
+            <div class="card stat-card h-100">
+                <div class="card-body">
+                    <p class="text-secondary mb-1">Approved</p>
+                    <div class="stat-number text-success">
+                        {{ counts["approved"] or 0 }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-lg-3">
+            <div class="card stat-card h-100">
+                <div class="card-body">
+                    <p class="text-secondary mb-1">In Progress</p>
+                    <div class="stat-number text-primary">
+                        {{ counts["in_progress"] or 0 }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-lg-3">
+            <div class="card stat-card h-100">
+                <div class="card-body">
+                    <p class="text-secondary mb-1">Completed</p>
+                    <div class="stat-number text-secondary">
+                        {{ counts["completed"] or 0 }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold mb-0">Recent Bookings</h4>
+        <a href="/my-bookings" class="text-success">View all</a>
+    </div>
+
+    {% if recent_bookings %}
+        <div class="row g-3">
+            {% for booking in recent_bookings %}
+                <div class="col-12">
+                    <div class="card action-card">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between
+                                        align-items-start flex-wrap gap-2">
+                                <div>
+                                    <h5 class="fw-bold">
+                                        {{ booking["service_type"] }}
+                                    </h5>
+                                    <p class="text-secondary mb-1">
+                                        {{ booking["preferred_date"] }}
+                                        at {{ booking["preferred_time"] }}
+                                    </p>
+                                    <p class="small mb-0">
+                                        {{ booking["service_address"] }}
+                                    </p>
+                                </div>
+
+                                <span class="badge
+                                    {% if booking['status'] == 'Pending' %}
+                                        text-bg-warning
+                                    {% elif booking['status'] == 'Approved' %}
+                                        text-bg-success
+                                    {% elif booking['status'] == 'In Progress' %}
+                                        text-bg-primary
+                                    {% elif booking['status'] == 'Completed' %}
+                                        text-bg-secondary
+                                    {% else %}
+                                        text-bg-danger
+                                    {% endif %}">
+                                    {{ booking["status"] }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="card action-card">
+            <div class="card-body p-5 text-center">
+                <h5 class="fw-bold">No service requests yet</h5>
+                <p class="text-secondary">
+                    Your bookings will appear here after you submit a request.
+                </p>
+                <a href="/book-service" class="btn btn-success">
+                    Book Your First Service
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</main>
+
+</body>
+</html>
